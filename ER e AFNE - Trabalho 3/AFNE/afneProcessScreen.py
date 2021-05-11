@@ -43,7 +43,6 @@ class AFNEProcessScreen:
         return efecho
 
     def processingWindow(self, chain):
-        print(len(self.stack))
         if len(self.stack) == 0:
             self.endWithFail()
             return 
@@ -109,12 +108,16 @@ class AFNEProcessScreen:
 
     def endWithSuccess(self, state):
         messagebox.showinfo("Resultado:", "Estado final: " + state + "\nCADEIA ACEITA!")
-        self.stack = [(self.automata.initialState, 0)]
+        self.stack = []
+        for state in self.calculateEfecho(self.automata.initialState, set()):
+            self.stack.append((state, 0))
         self.initialWindow()
 
     def endWithFail(self):
         messagebox.showinfo("Resultado:", "CADEIA REJEITADA!")
-        self.stack = [(self.automata.initialState, 0)]
+        self.stack = []
+        for state in self.calculateEfecho(self.automata.initialState, set()):
+            self.stack.append((state, 0))
         self.initialWindow()
     
     def cleanScreen(self):
@@ -130,3 +133,12 @@ class AFNEProcessScreen:
     def getPng(self, svg_file):
         drawing = svg2rlg(svg_file)
         renderPM.drawToFile(drawing, "./resources/AFNE.png", fmt="PNG")
+
+
+        # Mula mestre: Miguel
+        # Rei das Mulas: Lucas
+
+        # (a*.b*)* -> E? sim; cadeia com um único elemento? sim; aaa? sim; abab? sim; ba? sim;
+
+        # Mula maior: 
+        # Mula menor: 
