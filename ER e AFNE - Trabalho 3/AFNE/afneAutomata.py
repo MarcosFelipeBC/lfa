@@ -1,12 +1,14 @@
 class AFNEAutomata:
-    def __init__(self, alphabet, initialState, transitions, acceptingStates):
+    def __init__(self, alphabet, states, initialState, transitions, acceptingState):
         self.alphabet = alphabet
+        self.states = states
         self.initialState = initialState
         self.transitions = transitions
-        self.acceptingStates = acceptingStates
+        self.acceptingState = acceptingState
 
     def validateChain(self, chain):
         for i in chain:
             if not i in self.alphabet:
                 return False
         return True
+

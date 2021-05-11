@@ -3,20 +3,26 @@ from afneAutomata import AFNEAutomata
 from afneProcessScreen import AFNEProcessScreen
 
 def main():
-    automataDict = automata_IO.nfa_json_importer("./resources/AFN.json")
+    automataDict = automata_IO.nfa_json_importer("./resources/AFNE.json")
 
     alphabet = automataDict["alphabet"]
+
+    states = automataDict["states"]
+
     initialState = ""
     for state in automataDict["initial_states"]:
         initialState = state
         break
     transitions = automataDict["transitions"]
 
-    acceptingStates = automataDict["accepting_states"]
+    acceptingState = ""
+    for state in automataDict["accepting_states"]:
+        acceptingState = state
+        break
 
-    automata_IO.nfa_to_dot(automataDict, "AFN", "./resources")
+    automata_IO.nfa_to_dot(automataDict, "AFNE", "./resources")
 
-    automata = AFNEAutomata(alphabet, initialState, transitions, acceptingStates)
+    automata = AFNEAutomata(alphabet, states, initialState, transitions, acceptingState)
 
     AFNEProcessScreen(automata)
 

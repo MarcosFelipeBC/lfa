@@ -6,16 +6,19 @@ from reportlab.graphics import renderPM
 
 class AFNEProcessScreen:
     def __init__(self, automata):
-        self.getPng("./resources/AFN.dot.svg")
+        self.getPng("./resources/AFNE.dot.svg")
         self.automata = automata
-        self.stack = [(automata.initialState, 0)]
+        self.stack = []
+        for state in self.calculateEfecho(self.automata.initialState, set()):
+            self.stack.append((state, 0))
+        
         self.root = tk.Tk()
         self.initialWindow()
 
     def initialWindow(self):
         self.cleanScreen()
         self.root.configure(bg='white')
-        img = Image.open('./resources/AFN.png')
+        img = Image.open('./resources/AFNE.png')
         pimg = ImageTk.PhotoImage(img)
         size = img.size
         canvas = tk.Canvas(self.root, width=size[0], height=size[1], bg='white')
@@ -32,14 +35,15 @@ class AFNEProcessScreen:
     def calculateEfecho(self, state, efechoSoFar):
         efecho = set([state])
         efechoSoFar.update(efecho)
-        if (state, 'ε') in self.automata.transitions:
-            for nextState in self.automata.transitions[(state, 'ε')]:
+        if (state, 'E') in self.automata.transitions:
+            for nextState in self.automata.transitions[(state, 'E')]:
                 if not nextState in efechoSoFar:
                     efecho.update(self.calculateEfecho(nextState, efechoSoFar))
         
         return efecho
 
     def processingWindow(self, chain):
+        print(len(self.stack))
         if len(self.stack) == 0:
             self.endWithFail()
             return 
@@ -47,7 +51,7 @@ class AFNEProcessScreen:
         state, position = self.stack.pop()
 
         if position == len(chain):
-            if state in self.automata.acceptingStates:
+            if state == self.automata.acceptingState:
                 self.endWithSuccess(state)
             else: 
                 self.processingWindow(chain)
@@ -57,24 +61,25 @@ class AFNEProcessScreen:
             symbol = chain[position]
             if (state, symbol) in self.automata.transitions:
                 for nextState in self.automata.transitions[(state, symbol)]:
-                    efecho = self.calculateEfecho(nextState, set())
-                    for nextFromEfecho in efecho:
-                        self.stack.append((nextFromEfecho, position+1))
+                    efecho.update(self.calculateEfecho(nextState, set()))
+
+                for nextFromEfecho in efecho:
+                    self.stack.append((nextFromEfecho, position+1))
 
         self.cleanScreen()
         self.root.configure(bg='white') 
-        img = Image.open('./resources/AFN.png')
+        img = Image.open('./resources/AFNE.png')
         pimg = ImageTk.PhotoImage(img)
         size = img.size
         canvas = tk.Canvas(self.root, width=size[0], height=size[1], bg='white')
         canvas.pack()
         canvas.create_image(0, 0, anchor='nw', image=pimg)
-        label = tk.Label()
+        label = None
         if len(efecho) == 0:
-            label = tk.Label(self.root, text=f"ESTADO ATUAL: \"{state}\" | Posição: {position} | Símbolo: {chain[position]}\nPossibilidades a partir da união dos ε-fechos: {{}}", bg='white', font="Verdana 12 bold")
+            label = tk.Label(self.root, text=f"ESTADO ATUAL: \"{state}\" | Posição: {position} | Símbolo: {chain[position]}\nPossibilidades a partir da união dos E-fechos: {{}}", bg='white', font="Verdana 12 bold")
         else:
-            label = tk.Label(self.root, text=f"ESTADO ATUAL: \"{state}\" | Posição: {position} | Símbolo: {chain[position]}\nPossibilidades a partir da união dos ε-fechos: {efecho}", bg='white', font="Verdana 12 bold")
-        label.pack(side = tk.LEFT)
+            label = tk.Label(self.root, text=f"ESTADO ATUAL: \"{state}\" | Posição: {position} | Símbolo: {chain[position]}\nPossibilidades a partir da união dos E-fechos: {efecho}", bg='white', font="Verdana 12 bold")
+        label.pack(side = tk.TOP)
 
         self.root.geometry("1080x720")
         self.nextButton(chain)
@@ -124,4 +129,4 @@ class AFNEProcessScreen:
 
     def getPng(self, svg_file):
         drawing = svg2rlg(svg_file)
-        renderPM.drawToFile(drawing, "./resources/AFN.png", fmt="PNG")
+        renderPM.drawToFile(drawing, "./resources/AFNE.png", fmt="PNG")
