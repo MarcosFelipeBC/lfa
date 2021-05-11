@@ -1,0 +1,5 @@
+digraph {
+	fake [style=invisible]
+	s0 [root=true]
+	fake -> s0 [style=bold]
+}
