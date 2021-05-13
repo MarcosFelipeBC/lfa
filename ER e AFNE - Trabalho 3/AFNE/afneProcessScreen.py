@@ -1,6 +1,10 @@
 import tkinter as tk
+from tkinter import Toplevel, ttk
+from tkinter import Frame
 from tkinter import messagebox
 from PIL import Image, ImageTk
+from reportlab.graphics.shapes import _DrawTimeResizeable
+from reportlab.platypus.doctemplate import SimpleDocTemplate
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
 
@@ -13,24 +17,34 @@ class AFNEProcessScreen:
             self.stack.append((state, 0))
         
         self.root = tk.Tk()
+        self.frame_information = tk.Frame(self.root, height=800, width=700, bg='white')
+        self.frame_image = tk.Frame(self.root, height=800, width=380, bg='white')
         self.initialWindow()
 
     def initialWindow(self):
-        self.cleanScreen()
-        self.root.configure(bg='white')
+        #self.cleanScreen()
+        self.clear_frame(self.frame_information)
+        
         img = Image.open('./resources/AFNE.png')
         pimg = ImageTk.PhotoImage(img)
         size = img.size
-        canvas = tk.Canvas(self.root, width=size[0], height=size[1], bg='white')
+        self.root.geometry("1080x720") 
+        yscrollbar = ttk.Scrollbar(self.frame_image, orient= tk.VERTICAL)
+        yscrollbar.pack(side=tk.RIGHT, fill="y")
+        canvas = tk.Canvas(self.frame_image,width= 500, height= size[1], bg='white', yscrollcommand = yscrollbar.set)
         canvas.pack()
         canvas.create_image(0, 0, anchor='nw', image=pimg)
-        self.root.geometry("1080x720")
-
-        tk.Label(self.root, text="Digite a cadeia a ser consumida", bg='white', font="Verdana 16 bold", pady=10).place(x=2, y=20)
-
+        yscrollbar.config(command = canvas.yview)
+        
+        tk.Label(self.frame_information, text="Digite a cadeia a ser consumida", bg='white', font="Verdana 16 bold").place(x= 30, y=10)
+        self.frame_information.pack(side=tk.LEFT)
+        self.frame_image.pack(side=tk.RIGHT)
+        
         chainEntry = self.chainEntry()
         self.startButton(chainEntry)
+        
         self.root.mainloop()
+       
 
     def calculateEfecho(self, state, efechoSoFar):
         efecho = set([state])
@@ -65,20 +79,26 @@ class AFNEProcessScreen:
                 for nextFromEfecho in efecho:
                     self.stack.append((nextFromEfecho, position+1))
 
-        self.cleanScreen()
-        self.root.configure(bg='white') 
+        
+
+        #self.cleanScreen()
+        self.clear_frame(self.frame_information)
         img = Image.open('./resources/AFNE.png')
         pimg = ImageTk.PhotoImage(img)
         size = img.size
-        canvas = tk.Canvas(self.root, width=size[0], height=size[1], bg='white')
+        yscrollbar = ttk.Scrollbar(self.frame_image, orient= tk.VERTICAL)
+        yscrollbar.pack(side=tk.RIGHT, fill="y")
+        canvas = tk.Canvas(self.frame_image,width= 500, height= size[1], bg='white', yscrollcommand = yscrollbar.set)
         canvas.pack()
         canvas.create_image(0, 0, anchor='nw', image=pimg)
+        yscrollbar.config(command = canvas.yview)
+        
         label = None
         if len(efecho) == 0:
-            label = tk.Label(self.root, text=f"ESTADO ATUAL: \"{state}\" | Posição: {position} | Símbolo: {chain[position]}\nPossibilidades a partir da união dos E-fechos: {{}}", bg='white', font="Verdana 12 bold")
+            label = tk.Label(self.frame_information, text=f"ESTADO ATUAL: \"{state}\" | Posição: {position}\nSímbolo: {chain[position]}\nPossibilidades a partir da união dos E-fechos: {{}}", bg='white', font="Verdana 12 bold")
         else:
-            label = tk.Label(self.root, text=f"ESTADO ATUAL: \"{state}\" | Posição: {position} | Símbolo: {chain[position]}\nPossibilidades a partir da união dos E-fechos: {efecho}", bg='white', font="Verdana 12 bold")
-        label.pack(side = tk.TOP)
+            label = tk.Label(self.frame_information, text=f"ESTADO ATUAL: \"{state}\" | Posição: {position}\n | Símbolo: {chain[position]}\nPossibilidades a partir da união dos E-fechos: {efecho}", bg='white', font="Verdana 12 bold")
+        label.place(x= 10, y= 280)
 
         self.root.geometry("1080x720")
         self.nextButton(chain)
@@ -86,17 +106,17 @@ class AFNEProcessScreen:
         
     def chainEntry(self):
         chainEntry = tk.StringVar()
-        chainEntry = tk.Entry(self.root, width=30, textvariable=chainEntry)
-        chainEntry.place(x=5, y=90)
+        chainEntry = tk.Entry(self.frame_information, width=30, textvariable=chainEntry)
+        chainEntry.place(x= 90, y=70)
         return chainEntry
 
     def nextButton(self, chain): 
-        button = tk.Button(self.root, text="Next", command=lambda:self.processingWindow(chain), width=7, height=2)
-        button.place(x=10, y=200)
+        button = tk.Button(self.frame_information, text="Next", command=lambda:self.processingWindow(chain), width=7, height=2)
+        button.place(x=170 , y=140)
 
     def startButton(self, chainEntry):
-        button = tk.Button(self.root, text="Start", command=lambda:self.startButtonAction(chainEntry), width=7, height=2)
-        button.place(x=10, y=200)
+        button = tk.Button(self.frame_information, text="Start", command=lambda:self.startButtonAction(chainEntry), width=7, height=2)
+        button.place(x=170 , y=140)
 
     def startButtonAction(self, chainEntry):
         chain = chainEntry.get()
@@ -134,6 +154,9 @@ class AFNEProcessScreen:
         drawing = svg2rlg(svg_file)
         renderPM.drawToFile(drawing, "./resources/AFNE.png", fmt="PNG")
 
+    def clear_frame(self, frame):
+        for widgets in frame.winfo_children():
+            widgets.destroy()
 
         # Mula mestre: Miguel
         # Rei das Mulas: Lucas
