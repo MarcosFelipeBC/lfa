@@ -24,6 +24,7 @@ class AFNEProcessScreen:
     def initialWindow(self):
         #self.cleanScreen()
         self.clear_frame(self.frame_information)
+        self.clear_frame(self.frame_information)
         
         img = Image.open('./resources/AFNE.png')
         pimg = ImageTk.PhotoImage(img)
@@ -82,7 +83,7 @@ class AFNEProcessScreen:
         
 
         #self.cleanScreen()
-        self.clear_frame(self.frame_information)
+        #self.clear_frame(self.frame_information)
         img = Image.open('./resources/AFNE.png')
         pimg = ImageTk.PhotoImage(img)
         size = img.size
