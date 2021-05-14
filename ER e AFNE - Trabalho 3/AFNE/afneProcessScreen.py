@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import Toplevel, ttk
 from tkinter import Frame
 from tkinter import messagebox
-from tkinter.constants import X
+from tkinter.constants import FALSE, X
 from PIL import Image, ImageTk
 from reportlab.graphics.shapes import _DrawTimeResizeable
 from reportlab.platypus.doctemplate import SimpleDocTemplate
@@ -19,6 +19,7 @@ class AFNEProcessScreen:
             self.stack.append((state, 0))
         
         self.root = tk.Tk()
+        self.root.resizable(False, False)
         self.root.configure(background='black')
         self.frame_information = tk.Frame(self.root, height=800, width=540, bg='lightblue')
         self.frame_image = tk.Frame(self.root, height=800, width=540, bg='white')

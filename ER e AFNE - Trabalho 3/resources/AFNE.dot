@@ -1,15 +1,15 @@
 digraph {
 	fake0 [style=invisible]
-	q9 [shape=doublecircle]
-	q6
-	q3
 	q8
-	q1
 	q7
 	q0 [root=true]
+	q9 [shape=doublecircle]
+	q3
 	q2
-	q5
 	q4
+	q6
+	q5
+	q1
 	fake0 -> q0 [style=bold]
 	q2 -> q3 [label=a]
 	q4 -> q5 [label=b]
