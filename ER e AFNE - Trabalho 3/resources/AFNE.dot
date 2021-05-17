@@ -1,25 +1,14 @@
 digraph {
 	fake0 [style=invisible]
-	q8
-	q7
+	q4 [shape=doublecircle]
 	q0 [root=true]
-	q9 [shape=doublecircle]
 	q3
-	q2
-	q4
-	q6
-	q5
 	q1
+	q2
 	fake0 -> q0 [style=bold]
-	q2 -> q3 [label=a]
-	q4 -> q5 [label=b]
-	q1 -> q4 [label=E]
-	q1 -> q2 [label=E]
-	q3 -> q6 [label=E]
-	q5 -> q6 [label=E]
-	q7 -> q8 [label=c]
-	q0 -> q7 [label=E]
+	q1 -> q2 [label=a]
+	q0 -> q3 [label=E]
 	q0 -> q1 [label=E]
-	q6 -> q9 [label=E]
-	q8 -> q9 [label=E]
+	q2 -> q4 [label=E]
+	q3 -> q4 [label=E]
 }

@@ -239,11 +239,18 @@ def buildAutomata(root: Node):
 
     if root.left == None and root.right == None:
         alphabet = set([root.data])
-        states = set(["q0", "q1"])
         initial_state = "q0"
-        accepting_state = "q1"
-        transitions = {("q0", root.data): set(["q1"])}
-        automata = AFNEAutomata(alphabet, states, initial_state, transitions, accepting_state)
+
+        if root.data == 'E':
+            states = set(["q0"])
+            accepting_state = "q0"
+            transitions = {}
+            automata = AFNEAutomata(alphabet, states, initial_state, transitions, accepting_state)   
+        else:
+            states = set(["q0", "q1"])
+            accepting_state = "q1"
+            transitions = {("q0", root.data): set(["q1"])}
+            automata = AFNEAutomata(alphabet, states, initial_state, transitions, accepting_state)
     elif root.data == '*':
         automataLeft = buildAutomata(root.left)
         automata = mergeFechamento(automataLeft)

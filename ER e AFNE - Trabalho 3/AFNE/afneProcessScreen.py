@@ -37,7 +37,7 @@ class AFNEProcessScreen:
         yscrollbar.pack(side=tk.RIGHT, fill="y")
         xscrollbar = ttk.Scrollbar(self.frame_image, orien=tk.HORIZONTAL)
         xscrollbar.pack(side=tk.BOTTOM, fill="x")
-        canvas = tk.Canvas(self.frame_image,width=510, height=size[1], background='white', highlightbackground='white')
+        canvas = tk.Canvas(self.frame_image,width=510, height=800, background='white', highlightbackground='white')
         canvas.pack()
         canvas.create_image(0, 0, anchor='nw', image=pimg)
         yscrollbar.config(command = canvas.yview)
