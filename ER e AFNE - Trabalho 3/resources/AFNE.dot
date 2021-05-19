@@ -1,14 +1,5 @@
 digraph {
 	fake0 [style=invisible]
-	q4 [shape=doublecircle]
 	q0 [root=true]
-	q3
-	q1
-	q2
 	fake0 -> q0 [style=bold]
-	q1 -> q2 [label=a]
-	q0 -> q3 [label=E]
-	q0 -> q1 [label=E]
-	q2 -> q4 [label=E]
-	q3 -> q4 [label=E]
 }

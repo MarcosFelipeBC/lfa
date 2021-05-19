@@ -7,8 +7,9 @@ class Node:
         self.right = None
         self.data = data
 
+#Construção da árvore de expressão
 def buildTree(postfixExpression):
-    stack = []
+    stack = [None]
     
     for c in postfixExpression:
         cur = Node(c)
@@ -27,6 +28,8 @@ def buildTree(postfixExpression):
     
     return stack.pop()
 
+#Algoritmo de conversão de expressões de infixa para posfixa
+#http://www.vision.ime.usp.br/~pmiranda/mac122_2s14/aulas/aula13/aula13.html
 def infix2postfix(expression):
     prec = {}
     prec['*'] = 3
@@ -236,8 +239,15 @@ def mergeUniao(automataLeft: AFNEAutomata, automataRight: AFNEAutomata):
 
 def buildAutomata(root: Node):
     automata = None
+    if root == None:
+        alphabet = set()
+        initial_state = "q0"
+        states = set(["q0"])
+        accepting_state = ""
+        transitions = {}
+        automata = AFNEAutomata(alphabet, states, initial_state, transitions, accepting_state)
 
-    if root.left == None and root.right == None:
+    elif root.left == None and root.right == None:
         alphabet = set([root.data])
         initial_state = "q0"
 
@@ -266,10 +276,19 @@ def buildAutomata(root: Node):
     return automata
 
 def main():
+    #Leitura da expressão regular na forma infixa
     regularExpression = input()
+
+    #Conversão da expressão regular para a forma posfixa
     postfixExpression = infix2postfix(regularExpression)
+
+    #Construção da árvore de expressão a partir da expressão na forma posfixa
     tree = buildTree(postfixExpression)
+
+    #Construção do AFNE
     automata = buildAutomata(tree)
+
+    #Criação do dicionário requerido pela biblioteca PySimpleAutomata
     automataDict = {
         "alphabet": automata.alphabet,
         "states": automata.states,
@@ -277,6 +296,8 @@ def main():
         "accepting_states": set([automata.acceptingState]),
         "transitions": automata.transitions
     }
+
+    #Conversão do dicionário de automato para JSON (que será utilizado na execução do AFNE)
     automata_IO.nfa_to_json(automataDict, "AFNE", "./resources")
 
 if __name__ == "__main__":
